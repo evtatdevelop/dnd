@@ -2,51 +2,43 @@ import update from "immutability-helper";
 import { useCallback, useState } from "react";
 import { useDrop } from "react-dnd";
 import { Box } from "./Box.js";
-import { ItemTypes } from "./ItemTypes.js";
 
 const styles = {
-  width: 300,
-  height: 300,
-  border: "1px solid black",
+  width: "100%",
+  height: "98vh",
   position: "relative"
 };
 
 export const Container = () => {
-  const [boxes, setBoxes] = useState({
-    a: { top: 1, left: 1, title: "Drag me" }
-  });
+
+  const [box, setBox] = useState( {top: 1, left: 1 } );
 
   const moveBox = useCallback(
-    (id, left, top) => {
-      setBoxes(update(boxes, { [id]: { $merge: { left, top } } }));
-    },
-    [boxes, setBoxes]
+    (left, top) => { setBox( update(box, { $merge: { left, top } }))},
+    [box, setBox]
   );
 
   const [, drop] = useDrop(
     () => ({
-      accept: ItemTypes.BOX,
+      accept: 'box',
       drop(item, monitor) {
         const delta = monitor.getDifferenceFromInitialOffset();
         const left = Math.round(item.left + delta.x);
         const top = Math.round(item.top + delta.y);
-        moveBox(item.id, left, top);
+        moveBox(left, top);
         return undefined;
       }
     }),
     [moveBox]
   );
 
+  const { left, top } = box;
+  
   return (
     <div ref={drop} style={styles}>
-      {Object.keys(boxes).map((key) => {
-        const { left, top, title } = boxes[key];
-        return (
-          <Box key={key} id={key} left={left} top={top}>
-            {title}
-          </Box>
-        );
-      })}
+      
+      <Box left={left} top={top}/> 
+    
     </div>
   );
 };

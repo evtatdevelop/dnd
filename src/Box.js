@@ -1,28 +1,27 @@
 import { useDrag } from "react-dnd";
-import { ItemTypes } from "./ItemTypes.js";
 const style = {
   position: "absolute",
   border: "1px dashed gray",
-  backgroundColor: "white",
   padding: "0.5rem 1rem",
   cursor: "move"
 };
 
-export const Box = ({ id, left, top, children }) => {
+export const Box = ({ left, top }) => {
+
   const [{ isDragging }, drag] = useDrag(
     () => ({
-      type: ItemTypes.BOX,
-      item: { id, left, top },
+      type: 'box',
+      item: { left, top },
       collect: (monitor) => ({ isDragging: monitor.isDragging() })
     }),
-    [id, left, top]
+    [left, top]
   );
-  if (isDragging && true) {
-    return <div ref={drag} />;
-  }
+  
+  if (isDragging && true) return <div ref={drag} />;
+  
   return (
     <div className="box" ref={drag} style={{ ...style, left, top }}>
-      {children}
+      DragMe
     </div>
   );
 };
